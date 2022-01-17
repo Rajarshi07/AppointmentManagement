@@ -1,0 +1,99 @@
+{% extends 'layout.html' %}
+{%load static%}
+
+{% block title %}Appointment Create{% endblock %}
+{% block content%}
+{% if is_patient %}
+<p>Access Denied</p>
+{%elif is_doctor%}   
+<link href="https://cdn.jsdelivr.net/npm/mc-datepicker/dist/mc-calendar.min.css" rel="stylesheet" />
+<style>
+    label.required:after {
+    content:" *";
+    color: red;
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mc-datepicker/dist/mc-calendar.min.js"></script>
+
+<!-- <div class="main container md-5 mb-5">
+     -->
+<div class="container register-form">
+    <div class="form">
+        <div class="note">
+            <p class="text text-weight-bold lead" style="font-size: 1.65rem">Appointment Management</p>
+            <p class="text text-weight-bold lead" style="font-size: 1.50rem">Create Multiple Appointments</p>
+        </div> 
+        <div class="note">
+            <button onclick="window.history.back()" class="btn btn-success text-uppercase mb-4"><i class="fas fa-arrow-circle-left"></i> Go Back</button>
+        </div>
+    <!-- Create a Form -->
+        <form enctype='multipart/form-data' method="POST" autocomplete="off"> 
+            <!-- <input autocomplete="off" name="hidden" type="text" style="display:none;"> -->
+            <!-- Security token -->
+            {% csrf_token %}
+            <div class="col-md-6">
+                <div class="input-group" id="dt">
+                    <input type="text" id="sdt" name="sdt" class="form-control" placeholder="Start Date" required>
+                    <input type="text" id="edt" name="edt" class="form-control" placeholder="End Date" required>
+                </div>
+                <a onclick="addslot()" class="btn btn-info mb-4 mt-2">+ Add Time Slot</a>
+                <input type="hidden" class="hidden" name="slot_count" id="slot_count" value="0"/>
+                <input type="hidden" class="hidden" name="slot_name" id="slot_name" />
+                <div id="slots">
+                </div>
+            </div>
+            <input type="submit" value="submit" class="btn btn-success text-uppercase"/> 
+        </form> 
+    </div>
+</div>
+ 
+<datalist id="types">
+    {% for type in apttype %}
+      <option value="{{type.type}}">
+    {% endfor %}
+</datalist>
+<script>
+sdate = MCDatepicker.create({ el: '#sdt',bodyType: 'inline',dateFormat: 'YYYY-MM-DD'});
+edate = MCDatepicker.create({ el: '#edt',bodyType: 'inline',dateFormat: 'YYYY-MM-DD'});
+</script> 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/clocklet@0.3.0/css/clocklet.min.css">
+<script src="https://cdn.jsdelivr.net/npm/clocklet@0.3.0"></script>
+<script>
+
+    div_slot= document.getElementById('slots');
+    n = document.getElementById('slot_count');
+    nm=document.getElementById('slot_name');
+    function addslot(){
+        n.value= parseInt(n.value)+1
+        div = document.createElement('div');
+        div.setAttribute('class','input-group mb-2');
+        div.setAttribute('id',`t${n.value}`);
+        div.innerHTML = `
+            <input type="text" name="st${n.value}" id="st${n.value}"  class="form-control" placeholder="Start Time" required>
+            <input type="text" id="et${n.value}" name="et${n.value}" class="form-control" placeholder="End Time">
+            <a class="btn btn-outline-danger" type="button" onclick="rmslot('${n.value}')">Remove</a>
+        </div>
+        `;
+        div_slot.appendChild(div);
+        nm.value=nm.value+n.value+','; 
+    }
+    document.body.addEventListener('click',(event)=>{
+        if(event.target.id){
+            if(event.target.id.startsWith('st')){
+                clocklet.open(event.target)
+            }
+            if(event.target.id.startsWith('et')){
+                clocklet.open(event.target)
+            }
+        }
+    })
+
+    function rmslot(n){
+        document.getElementById('t'+n).remove()
+        nm.value = nm.value.split(',').filter((val)=>val!=n).join(',')
+        console.log(n)
+    }
+</script>
+</div>
+{%endif %}
+{% endblock %}

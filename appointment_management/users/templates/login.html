@@ -1,0 +1,31 @@
+{%extends 'login_base.html'%}
+
+{%block title%}Login{%endblock%}
+
+{%block content%}
+<!-- Login Form -->
+<form action="{%url 'login'%}" method="post">
+	{% csrf_token %}
+	<input class="fadeIn second" type="text" name="username" placeholder="Email" id="username" required
+		oninvalid="this.setCustomValidity('All fields are required')" oninput="this.setCustomValidity('')">
+	<input class="fadeIn third" type="password" name="password" placeholder="Password" id="password"
+		required oninvalid="this.setCustomValidity('All fields are required')"
+		oninput="this.setCustomValidity('')">
+	<div class="msg fadeIn fifth" style="color: red;">{{ msg }}</div>
+	<input class="fadeIn fourth" type="submit" value="Login">
+	<p class="fadeIn fifth">Not a member? <a class="underlineHover" href="{%url 'register'%}">Sign up</a></p>
+</form>
+{%endblock%}
+
+{%block footer%}
+<a class="underlineHover" href="/accounts/password_reset/">Forgot Password?</a>
+{%endblock%}
+
+
+{%block script%}
+<script>
+	{% if user.is_authenticated %}
+		window.location.href = "{%url 'home'%}";
+	{% endif %}
+</script>
+{%endblock%}

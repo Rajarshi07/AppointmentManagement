@@ -1,0 +1,30 @@
+{%extends 'login_base.html'%}
+{% load static %}
+{%block title%}Register{%endblock%}
+{%block content%}
+	<div>
+		<h2 class="fadeIn second">Register as: </h2>
+	</div>
+	<input type="button" class="fadeIn fourth" class="reg-btn" onclick="register(1)" value="Doctor" />
+	<input type="button" class="fadeIn fourth" class="reg-btn" onclick="register(0)" value="Patient" />
+
+	<div class="msg fadeIn fifth" style="color: red;">{{ msg }}</div>
+{%endblock%}
+{%block footer%}
+	<p class="fadeIn fourth">
+		Already a member? <a class="underlineHover" href="{%url 'login'%}">Log In</a>
+	</p>
+	</div>
+{%endblock%}
+{%block script%}
+	<script> 
+		{% if user.is_authenticated %}
+			window.location.href = "{%url 'home'%}";
+		{% endif %}
+		register = (n) => window.location = n == 0 ? "{%url 'patient_register'%}" : n == 1 ? "{%url 'doctor_register'%}" : window.location;
+	</script>
+{%endblock%}
+	
+</body>
+
+</html>

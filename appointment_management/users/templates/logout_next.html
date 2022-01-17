@@ -1,0 +1,18 @@
+{% extends "login_base.html" %}
+{% load i18n %}
+{% block title %}
+    {{ _("Logged Out") }}
+{% endblock %}
+
+{% block content %}
+<p>{% translate 'Thank you for visiting us' %}</p>
+{% endblock %}
+
+{%block footer%}
+<a class="underlineHover" href="/users/login">Back to Login</a>
+<script>
+    document.addEventListener('click',()=>{
+        window.location.href = "/users/login";
+    });
+</script>
+{%endblock%}

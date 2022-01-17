@@ -1,0 +1,223 @@
+{% extends 'layout.html' %}
+{%load static%}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{%static 'css/register.css'%}">
+<br>
+
+{% for group in request.user.groups.all %}
+{% if group.name == 'patient' %}
+<div class="container register-form">
+    <div class="form">
+        <div class="note">
+            <p class="text text-weight-bold lead" style="font-size: 1.65rem">Patients' Profile</p>
+        </div>
+        <form id="pt_profile_form" method='POST' action="{%url 'profile'%}">
+            {%csrf_token%}
+            <div class="form-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="email" class="required">Email address</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ user.email}}" placeholder="name@example.com" required>
+                        </div>
+                        <div class="form-group">
+							<label for="first_name" class="required">First Name</label>
+							<input type="text" class="form-control" id="first_name" name="first_name" placeholder="First Name" required value="{{ user.first_name}}">
+                        </div>
+						<div class="form-group" class="required">
+                            <label for="last_name" class="required">Last Name</label>
+							<input type="text" class="form-control" id="last_name" name="last_name" placeholder="Last Name" value="{{ user.last_name}}" required>
+                        </div>                        
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <textarea class="form-control" id="address" rows="3" name="address" placeholder="Address" value="{{address}}">{{address}}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="dob"  class="required">Date of Birth</label>
+							<input type="date" class="form-control" value="{{dob}}" id="dob" name="dob" required>
+                        </div>     
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="history">Medical History</label>
+                            <textarea class="form-control" id="history" rows="3" name="history" placeholder="Medical History" value="{{history}}">{{history}}</textarea>
+                        </div>
+						<div class="form-group">
+                            <label for="phone" class="required">Phone Number</label>
+                            <input type="text" required class="form-control" name="phone" id="phone" placeholder="+91XXXXXXXXXX" value="{{phone}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="password1">Password</label>
+                            <a href="/accounts/password_change/">Change password</a>
+                        </div>
+                        <div class="form-group">
+                            <label id="alerts" class="text-danger"></label>
+                        </div>
+						<div class="form-group">
+							<input type="checkbox" id ="terms" required><label for="terms">Confirm Edits?</label>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btnSaveEdit">Update Profile</button>
+                            <button class="btnSaveEdit" onclick="window.location.reload()">Discard Changes</button>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </form>
+    </div>
+</div>
+{% elif group.name == 'doctor' %}
+<div class="container register-form">
+    <div class="form">
+        <div class="note">
+            <p class="text text-weight-bold lead" style="font-size: 1.65rem">Doctors' Profile</p>
+        </div>
+        <form id="pt_profile_form" method='POST' action="{%url 'profile'%}">
+            {%csrf_token%}
+            <div class="form-content">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="email" class="required">Email address</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ user.email}}" placeholder="name@example.com" required>
+                        </div>
+                        <div class="form-group">
+							<label for="first_name" class="required">First Name</label>
+							<input type="text" class="form-control" id="first_name" name="first_name" placeholder="First Name" required value="{{ user.first_name}}" >
+                        </div>
+						<div class="form-group">
+                            <label for="last_name" class="required">Last Name</label>
+							<input type="text" class="form-control" id="last_name" name="last_name" placeholder="Last Name" value="{{ user.last_name}}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="qualifications">Qualifications</label>
+                            <textarea class="form-control" id="qualifications" rows="3" name="qualifications" placeholder="Qualifications" value="{{qualifications}}">{{qualifications}}</textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+						<div class="form-group">
+                            <label for="phone" class="required">Phone Number</label>
+                            <input type="text" required class="form-control" name="phone" id="phone" placeholder="+91XXXXXXXXXX" value="{{phone}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="password1">Password</label>
+                            <a class="underlineHover" href="/accounts/password_change/">Change password</a>
+                        </div>
+                        <div class="form-group">
+                            <label id="alerts" class="text-danger"></label>
+                        </div>
+						<div class="form-group">
+							<input type="checkbox" id ="terms" required><label for="terms">Confirm Edits?</label>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btnSaveEdit">Update Profile</button>
+                            <button class="btnSaveEdit" onclick="window.location.reload()">Discard Changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endif %}
+{% endfor %}
+<div class="modal fade" id="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modaltitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id='modalbody'>
+            </div>
+            <div class="modal-footer">
+                <div id="modalbutton">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" id>Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+  
+  
+<script src="{%static 'js/url_editor.js'%}"></script>
+<script>
+    const validateEmail = (email) =>{
+        return email.match(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+    };
+
+    function processForm(e) {
+    if (e.preventDefault) e.preventDefault();
+    document.getElementById('alerts').innerHTML = "";
+    /* do what you want with the form */
+    email = document.getElementById('email').value
+    phone = document.getElementById('phone').value
+    if (validateEmail(email)) {
+        var ef =1;
+    } else {
+        document.getElementById('alerts').innerHTML += '<li>Invalid Email</li>'
+        ef = 0;
+    }
+    if (phone.match(/^\d{10}$/)) {
+        var pf =1;
+    } else {
+        document.getElementById('alerts').innerHTML += '<li>Invalid Phone Number</li>'
+        pf = 0;
+    }
+    if(ef==1 && pf==1){
+        document.getElementById('pt_profile_form').submit();
+    }
+    // You must return false to prevent the default form behavior
+    return false;
+}
+
+var form = document.getElementById('pt_profile_form');
+if (form.attachEvent) {
+    form.attachEvent("submit", processForm);
+} else {
+    form.addEventListener("submit", processForm);
+}
+</script>
+<script>
+messages = {
+    '1':{
+      'head':'Profile Updated',
+      'body':'Your account details have been updated',
+      'button':`<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Okay</button>`
+    },
+    '2':{
+      'head':'Email already registered with another account.',
+      'body':'Please try again with another Email Id.',
+      'button':`<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Okay</button>`
+    },
+}
+function getModal(url) {
+    console.log(url);
+    var modal = new bootstrap.Modal(document.getElementById('modal'))
+    modalhead = document.getElementById('modaltitle');
+    modalbody = document.getElementById('modalbody');
+    modalbutton = document.getElementById('modalbutton');
+    modalhead.innerHTML = messages[a]['head'];
+    modalbody.innerHTML = messages[a]['body'];
+    modalbutton.innerHTML = messages[a]['button'];
+    // modalbutton.innerHTML = '<a href="' + url + '" class="btn btn-primary" id>Confirm</button>';
+    modal.show()
+  }
+
+  function showMessage(arg="update"){
+    url = new URL(window.location.href);
+    a = url.searchParams.get('update');
+    if (a) {
+      getModal(a);
+    }
+    removeQString('update') 
+  }
+  window.addEventListener('load', showMessage);
+</script>
+{% endblock %}

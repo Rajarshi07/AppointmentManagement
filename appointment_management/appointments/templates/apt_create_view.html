@@ -1,0 +1,72 @@
+{% extends 'layout.html' %}
+{%load static%}
+
+{% block title %}Appointment Create{% endblock %}
+{% block content%}
+<link href="https://cdn.jsdelivr.net/npm/mc-datepicker/dist/mc-calendar.min.css" rel="stylesheet" />
+<style>
+    label.required:after {
+    content:" *";
+    color: red;
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mc-datepicker/dist/mc-calendar.min.js"></script>
+
+<!-- <div class="main container md-5 mb-5">
+     -->
+<div class="container register-form">
+    <div class="form">
+        <div class="note">
+            <p class="text text-weight-bold lead" style="font-size: 1.65rem">Appointment Management</p>
+            <p class="text text-weight-bold lead" style="font-size: 1.50rem">{{fntype}} Appointment</p>
+        </div> 
+        <div class="note">
+            <button onclick="window.history.back()" class="btn btn-success text-uppercase mb-4"><i class="fas fa-arrow-circle-left"></i> Go Back</button>
+            {%if is_doctor%}
+            <button onclick="window.location.assign('{%url 'multiple_appointments'%}')" class="btn btn-success mb-4">Add Multiple Appointments</button>
+            {%endif%}
+        </div>
+    <!-- Create a Form -->
+    {% if is_patient %}
+    <table>
+        {% if form.instance.doctor%}
+        {%for k,v in form.instance.get_string_fields%}
+            <tr>
+                <th>{{k}}</th>
+                <th>{{v}}</th>
+            </tr>
+        {%endfor%}
+        {%endif%}
+    </table>
+    {%endif%}
+        <form enctype='multipart/form-data' method="POST" autocomplete="off"> 
+            <!-- <input autocomplete="off" name="hidden" type="text" style="display:none;"> -->
+            <!-- Security token -->
+            {% csrf_token %} 
+        
+            <!-- Using the formset -->
+            {{ form.as_p}} 
+            
+            <input type="submit" value="Submit" class="btn btn-success text-uppercase"> 
+        </form> 
+    </div>
+</div>
+ 
+<datalist id="types">
+    {% for type in apttype %}
+      <option value="{{type.type}}">
+    {% endfor %}
+</datalist>
+<script>
+document.getElementById("id_apt_type").setAttribute("list", "types");
+document.getElementById('id_start_time').setAttribute('data-clocklet',"class-name: clocklet-options-1; format: _H:mm; alignment: center; placement: bottom;");
+document.getElementById('id_end_time').setAttribute('data-clocklet',"class-name: clocklet-options-1; format: _H:mm; alignment: center; placement: bottom;");
+date = MCDatepicker.create({ el: '#id_date',bodyType: 'inline',dateFormat: 'YYYY-MM-DD'});
+url = new URL(window.location.href);
+document.getElementById('id_patient').value = url.searchParams.get('patient')?url.searchParams.get('patient'):document.getElementById('id_patient').value;
+</script>   
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/clocklet@0.3.0/css/clocklet.min.css">
+<script src="https://cdn.jsdelivr.net/npm/clocklet@0.3.0"></script>
+
+</div> 
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "login_base.html" %}
+{% load i18n %}
+{% block title %}
+    {{ _("Home Page") }}
+{% endblock %}
+
+{% block content %}
+<p>{% translate 'Welcome to Skin Studio. Please login to book an appointment' %}</p>
+{% endblock %}
+
+{%block footer%}
+<a class="underlineHover" href="/users/login">Go to Login</a>
+<script>
+    document.addEventListener('click',()=>{
+        window.location.href = "/users/login/";
+    });
+</script>
+{%endblock%}

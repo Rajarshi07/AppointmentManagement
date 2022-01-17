@@ -1,0 +1,42 @@
+messages = {
+    '0':{
+      'head':'Appointment Slot Created',
+      'body':'New appointment slot has been added.',
+    },
+    '1':{
+      'head':'Appointment Booked',
+      'body':'Your appointment has been confirmed.',
+    },
+    '2':{
+      'head':'Appointment Edited',
+      'body':'Your appointment has been successfully edited.',
+    },
+    '3':{
+      'head':'Appointment Deleted',
+      'body':'This appointment slot has been deleted',
+    },
+    '4':{
+      'head':'Appointment Cancelled',
+      'body':'Thank you for contacting us, your appointment has been cancelled.',
+    },
+    '5':{
+      'head':'Appointment Rescheduled',
+      'body':'Your appointment has been rescheduled.',
+    },
+    '6':{
+      'head':'Appointment Completed',
+      'body':'Congratulations on completing your appointment. Please pay any fees due(if any).',
+    },
+    '7':{
+      'head':'Checked In',
+      'body':'Congratulations,you have been checked in successfully.',
+    },
+    '8':{
+      'head':'Cancelled Check In',
+      'body':'Your appointment status is changed back to booked. Please check in when you reach the clinic.',
+    },
+    '9':{
+      'head':'Cancel Check In?',
+      'body':'You have been checked out successfully.',
+    },
+  }

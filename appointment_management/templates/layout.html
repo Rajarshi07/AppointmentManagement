@@ -1,0 +1,169 @@
+{% load static %}
+{% load webpush_notifications %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- {% if user.is_authenticated %}
+			<script id="webpush-js" type="text/javascript" src="{% static 'js/webpush.js' %}"></script>
+			{# webpush_serviceworker.js render from template as it needs to be served from the same domain #}
+			<meta name="service-worker-js" content="{% url 'service_worker' %}">
+			<meta name="django-webpush-vapid-key" content="{{ vapid_public_key }}">
+		{% endif %} -->
+		<title>{% block title %}{% endblock %}</title>
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+		<script>
+		    var objQueryString = {};
+function getParameterByName(name = "") {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+function removeQString(key) {
+    var urlValue = document.location.href;
+    var searchUrl = location.search;//Get query string value
+    if (key != "") {
+        oldValue = getParameterByName(key);
+        removeVal = key + "=" + oldValue;
+        if (searchUrl.indexOf('?' + removeVal + '&') != "-1") {
+            urlValue = urlValue.replace('?' + removeVal + '&', '?');
+        }
+        else if (searchUrl.indexOf('&' + removeVal + '&') != "-1") {
+            urlValue = urlValue.replace('&' + removeVal + '&', '&');
+        }
+        else if (searchUrl.indexOf('?' + removeVal) != "-1") {
+            urlValue = urlValue.replace('?' + removeVal, '');
+        }
+        else if (searchUrl.indexOf('&' + removeVal) != "-1") {
+            urlValue = urlValue.replace('&' + removeVal, '');
+        }
+    }
+    else {
+        var searchUrl = location.search;
+        urlValue = urlValue.replace(searchUrl, '');
+    }
+    history.replaceState({ state: 1, rand: Math.random() }, '', urlValue);
+}
+
+function changeUrl(key, value) {
+    var searchUrl = location.search;  //Get query string value
+    if (searchUrl.indexOf("?") == "-1") {
+        var urlValue = '?' + key + '=' + value;
+        history.pushState({ state: 1, rand: Math.random() }, '', urlValue);
+    }
+    else {  //Check for key in query string, if not present
+        if (searchUrl.indexOf(key) == "-1") {
+            var urlValue = searchUrl + '&' + key + '=' + value;
+        }
+        else {	//If key present in query string
+            oldValue = getParameterByName(key);
+            if (searchUrl.indexOf("?" + key + "=") != "-1") {
+                urlValue = searchUrl.replace('?' + key + '=' + oldValue, '?' + key + '=' + value);
+            }
+            else {
+                urlValue = searchUrl.replace('&' + key + '=' + oldValue, '&' + key + '=' + value);
+            }
+        }
+        history.replaceState({ state: 1, rand: Math.random() }, '', urlValue);
+    }
+    objQueryString.key = value;
+}
+		</script>
+	</head>
+	<body class="loggedin">
+
+		<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #ffffff;">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="{%url 'home'%}">
+					<img src="{%static 'images/favicon.ico'%}" width="30" height="30" class="d-inline-block align-top" alt="">
+					Skin Studio
+				</a>
+			  <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+				<span class="navbar-toggler-icon"></span>
+			  </button>
+			  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+				<div class="offcanvas-header">
+				  <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Skin Studio (Dr. Rasna Kapoor)</h5>
+				  <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+				</div>
+				<div class="offcanvas-body">
+					{% if user.is_authenticated %}
+					<ul class="navbar-nav">
+						{% if user.is_superuser %}
+						<li class="nav-item">
+								<a class="nav-link" href ="/admin/">Admin Site</a>
+							
+						</li>
+						{% else %}
+							<li class="nav-item">
+								<a class="nav-link" href="{%url 'appointments'%}">All Time Slots</a></li>
+							</li>
+							{% if is_doctor %}
+							<li class="nav-item">
+									<a class="nav-link" onclick="window.location='{%url 'add_appointment'%}'">Add Appointment</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" onclick="window.location='{%url 'send_notifications'%}'">Send Notifications</a>
+							</li>
+							{% endif %}
+						{% endif %}
+					</ul>
+					{% endif %}
+					<ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+						{%block rightnav%}
+						{% if user.is_authenticated%}
+						<!-- <li class="nav-item" id="webpush-html">
+							<a id="webpush-subscribe-button" class="nav-link" href="#" {% if group %}data-group="{{ group }}"{% endif %} data-url="{{ webpush_save_url }}">
+							Turn on notifications
+							</a>
+							<div id="webpush-message" hidden></div>
+						</li> -->
+						<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="offcanvasNavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<!-- {{user.groups.all.first.name}} -->
+							{% for group in request.user.groups.all %}
+							{% if group.name == 'doctor' %}
+							Doctor:
+							{% elif group.name == 'patient' %}
+							Patient:
+							{% endif %}
+							{% endfor %}
+							{{request.user.first_name}}
+							{% if user.is_superuser %}
+								Admin user
+							{% endif %}
+						</a>
+						<ul class="dropdown-menu" aria-labelledby="offcanvasNavbarDropdown">
+							
+						{% if user.is_superuser %}
+						{% else %}
+							<li><a class="dropdown-item" href="{%url 'profile'%}">Profile</a></li>
+							<li>
+							<hr class="dropdown-divider">
+							</li>
+						{% endif %}
+							<li><a class="dropdown-item" href="{% url 'logout'%}">Logout</a></li>
+						</ul>
+						{% else %}
+						<li class="nav-item">
+							<a href="{%url 'login'%}" class="nav-link"><i class="fas fa-arrow-circle-left"></i> Back to login</a>
+						</li>
+						{% endif %}
+						{%endblock%}
+					</li>
+				  </ul>
+				</div>
+			  </div>
+			</div>
+		  </nav>
+		  <div class="container-fluid full-width">
+			{%block content%}
+			{%endblock%}
+		  </div>
+	</body>
+</html>

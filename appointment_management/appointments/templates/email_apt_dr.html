@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #ddddff;
+}
+</style>
+</head>
+<body>
+    Dear {{ appointment.doctor.user.get_full_name }},
+<br><br>
+    <!-- {{ appointment.patient.user.get_full_name }} has {{appointment.status}} an appointment with you on {{ appointment.date }} at {{ appointment.start_time }}. -->
+    {{text}}
+<br><br>
+    <table>
+        {%for k,v in appointment.get_string_fields%}
+            <tr>
+                <th>{{k}}</th>
+                <th>{{v}}</th>
+            </tr>
+        {%endfor%}
+    </table>
+<br><br>
+    {{site}}/appointments/edit/{{appointment.pk}} 
+<br><br>
+    Thanking You,
+<br><br>
+    Skin Studio Team <br>
+    Dr. Rasna Kapoor <br>
+</body>

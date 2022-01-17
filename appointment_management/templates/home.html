@@ -1,0 +1,500 @@
+
+{% extends 'layout.html' %}
+{% load static %}
+{% load webpush_notifications %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Maven+Pro&display=swap');
+
+body {
+    font-family: 'Maven Pro', sans-serif
+}
+
+body {
+    background-color: #eee
+}
+
+.add {
+    border-radius: 20px
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    transition: all 1s;
+    cursor: pointer
+}
+
+.card:hover {
+    -webkit-box-shadow: 3px 5px 17px -4px #777777;
+    box-shadow: 3px 5px 17px -4px #777777
+}
+
+.ratings i {
+    color: green
+}
+
+.apointment a {
+    border-radius: 20px;
+    background-color: #eee;
+    color: #000;
+    border-color: #eee;
+    font-size: 13px
+}
+</style>
+<div class="container mt-5 mb-5">
+  <h4>Welcome to {% if is_doctor %}Doctor's{%endif%}{% if is_patient %}Patient's{%endif%}{% if user.is_superuser %}Admin's{%endif%} Dashboard</h4>
+    <div class="row text-center">
+      
+      {% if user.is_superuser %}
+        <div class="col-lg-4">
+          <a class="btn btn-success text-uppercase w-100 mb-2" href="/admin/">Admin Site</a>
+        </div>
+      {% else %}
+        <div class="col-lg-4">
+          <a class="btn btn-success text-uppercase w-100  mb-2" href="{%url 'profile'%}">Update Profile Information</a>
+        </div>
+        {% if is_doctor %}
+        <div class="col-lg-4">
+          <a class="btn btn-success text-uppercase w-100 mb-2" href="{%url 'add_appointment'%}">Create Time Slots</a>
+        </div>
+        {%endif%}
+        {% if is_patient %}
+        <div class="col-lg-4">
+          <a class="btn btn-success text-uppercase w-100 mb-2" href="{%url 'appointments'%}?status=0">Book Appointments</a>
+        </div>
+        {%endif%}
+        <div class="col-lg-4">
+          <a class="btn btn-success text-uppercase w-100 mb-2" href="{%url 'appointments'%}?status=1">View / Update Appointments</a>
+        </div>
+    </div>
+    <div class="d-flex justify-content-between mb-3"> <span>{% if is_doctor %}Patients{%elif is_patient%}Doctors{%endif%}</span></div>
+    <div class="row g-2 ">
+        {% if is_doctor %}
+            {% for pat in patients %}
+            <div class="col-md-3">
+                <div class="card p-2 py-3 text-center h-100">
+                    <!-- <div class="img mb-2"> <img src="https://i.imgur.com/LohyFIN.jpg" width="70" class="rounded-circle"> </div> -->
+                    <h5 class="mb-0">{{pat.user.get_full_name}}</h5> 
+                    <div class="ratings mt-2"><small>{{patient.history|linebreaksbr}}</small> </div>
+                    <div class="mt-4 apointment"> <a class="btn btn-success text-uppercase" href="{% url 'patient_profile' id=pat.pk %}">Show Profile</a> </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% elif is_patient %}
+            {% for doctor in doctors %}
+            <div class="col-md-3">
+                <div class="card p-2 py-3 text-center h-100">
+                    <!-- <div class="img mb-2"> <img src="https://i.imgur.com/LohyFIN.jpg" width="70" class="rounded-circle"> </div> -->
+                    <h5 class="mb-0">{{doctor.user.get_full_name}}</h5> 
+                    <div class="ratings mt-2"><small>{{doctor.qualifications|linebreaksbr}}</small> </div>
+                    <div class="mt-4 apointment"> <a class="btn btn-success text-uppercase" href="{%url 'appointments'%}?doc={{doctor.pk}}&status=0">Book Appointment</a> </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    body {
+      font-family: 'Rubik', sans-serif;
+      height: 100% !important;
+      /* background-color: #89c77e !important */
+    }
+  
+    #star {
+      margin-left: -5px !important;
+      vertical-align: bottom !important;
+      opacity: 0.5
+    }
+  
+    .more {
+      opacity: 0.5 !important
+    }
+  
+    .btn:hover {
+      color: black !important
+    }
+  
+    .vl {
+      margin: 8px !important;
+      width: 2px;
+      border-right: 1px solid #aaaaaa;
+      height: 25px
+    }
+  
+    #plus {
+      opacity: 0.8
+    }
+  
+    .card {
+      border-radius: 10px !important
+    }
+  
+    /* a:hover {
+      background-color: #ccc !important
+    } */
+  
+    .btn-outlined:active {
+      color: #FFF;
+      border-color: #fff !important
+    }
+  
+    img {
+      cursor: pointer;
+      overflow: visible
+    }
+  
+    .btn:focus,
+    .btn:active {
+      outline: none !important;
+      box-shadow: none !important
+    }
+  
+    .container {
+      margin-top: 100px !important
+    }
+</style>
+<div class="main container mt-5 mb-5">
+<div class="d-flex justify-content-between mb-3"> <span>Appointment History</span></div>
+
+{% for apt in appointments reversed %}
+<div class="card mt-5 border-5 pt-2 active pb-0 px-3">
+  <div class="card-body ">
+    <div class="row">
+      <div class="col-12 ">
+        <h4 class="card-title ">
+          <b>{{apt.date}}&nbsp;</b>
+          {{apt.start_time |date:'f A'}}
+          {%if apt.end_time %}
+          - {{apt.end_time|date:'f A'}}
+          {%endif%}
+        </h4>
+      </div>
+      <div class="col">
+        <h6 class="card-subtitle mb-2 text-muted">
+          <p class="card-text text-muted small ">
+            Dr. {{apt.doctor.user.get_full_name}}
+            <span class="vl mr-2 ml-0"></span>
+            <span class="text-weight-bold 
+            {% if apt.status is 0 %}text-primary 
+            {%elif apt.status is 1%} text-warning 
+            {%elif apt.status is 2 %} text-success
+            {%elif apt.status is 3%} text-danger
+            {%endif%}">
+              {{apt.get_status_display}}
+            </span>
+          </p>
+        </h6>
+        {% if apt.patient %}
+          Patient: <a href="{% url 'patient_profile' id=apt.patient.pk %}"
+            class=" btn-outlined btn-black text-muted">{{apt.patient.user.get_full_name}}</a>
+        {%endif%}
+        {% if apt.apt_type %}
+          Type: <a class=" btn-outlined btn-black text-muted">{{apt.apt_type}}</a>
+        {%endif%}
+      </div>
+    </div>
+  </div>
+  <div class="card-footer bg-white px-0 ">
+    <div class="row">
+      <div class=" col-md-auto ">
+        {% if is_doctor %}
+          <a class="btn btn-outlined btn-black text-muted " href="{%url 'edit_appointment' id=apt.id %}">Edit</a>
+          <a class="btn btn-outlined btn-black text-muted "
+            onclick="getDeleteModal('{%url 'delete_appointment' id=apt.id %}')">Delete</a>
+        {% endif %}
+        <i class="mdi mdi-settings-outline"></i>
+        {% if is_patient %}
+          {%if apt.status is 0 %}
+          <!--open-->
+            <form action="{%url 'book_appointment' id=apt.id %}" class="form-inline" method="POST">
+              {% csrf_token %}
+              {% if reschedule%}
+              <input type="hidden" id="reschedule" name="reschedule" value="{{reschedule}}">
+              <input class="btn btn-outlined btn-black text-muted " type="Submit" value="Book"></input>
+              {%else%}
+              <input list="types" placeholder="Appointment Type" id="type" name="type"/>
+              <input class="btn btn-outlined btn-black text-muted " type="Submit" value="Book"></input>
+              {% endif %}
+            </form>
+
+          {%elif apt.status is 1 %}
+          <!--Booked-->
+            {% if apt.payment_status is 0 %}
+              <a class="btn btn-outlined btn-black text-muted " href="{%url 'payment' id=apt.id }">Pay {{apt.billing_amount}}</a>
+            {% endif %}
+            <a class="btn btn-outlined btn-black text-muted " href="{%url 'edit_appointment' id=apt.id %}">Edit</a>
+            <a class="btn btn-outlined btn-black text-muted " onclick="getCheckinModal('{%url 'checkin_appointment' id=apt.id %}')">Check-In</a>
+            <a class="btn btn-outlined btn-black text-muted " href="{%url 'appointments'%}?reschedule={{apt.id}}&doc={{apt.doctor.pk}}&status=0">Reschedule</a>
+            <a class="btn btn-outlined btn-danger " onclick="getCancelModal('{%url 'cancel_appointment' id=apt.id %}')">Cancel</a>
+          {%elif apt.status is 2 %}
+          <!--Completed-->
+            {% if apt.payment_status is 0 %}
+              <a class="btn btn-outlined btn-black text-muted " href="{%url 'payment' id=apt.id }">Pay {{apt.billing_amount}}</a>
+            {% endif %}
+          {%elif apt.status is 3 %}
+          <!--Cancelled-->
+          <a class="btn btn-outlined btn-black text-muted " href="{%url 'appointments'%}?reschedule={{apt.id}}&doc={{apt.doctor.pk}}&status=0">Reschedule</a>
+          {%elif apt.status is 4 %}
+          <!--Checked In-->
+            {% if apt.payment_status is 0 %}
+              <a class="btn btn-outlined btn-black text-muted " href="{%url 'payment' id=apt.id }">Pay {{apt.billing_amount}}</a>
+            {% endif %}              
+          <a class="btn btn-outlined btn-black text-muted " href="{%url 'edit_appointment' id=apt.id %}">Edit</a>
+          <a class="btn btn-outlined btn-danger" onclick="cancelCheckInModal('{%url 'cancelCheckIn_appointment' id=apt.id %}')">Cancel Check-In</a>
+          <a class="btn btn-outlined btn-success" href="{%url 'complete_appointment' id=apt.id %}">Complete</a>
+          {%elif apt.status is 5 %}
+          <!--Missed-->
+          <a class="btn btn-outlined btn-black text-muted " href="{%url 'appointments'%}?reschedule={{apt.id}}&doc={{apt.doctor.pk}}&status=0">Reschedule</a>
+          {%endif%}
+        <!-- <span class="vl ml-3"></span> -->
+        {% endif %}
+      </div>
+      <!-- <div class="col-md-auto ">
+      <ul class="list-inline">
+        <li class="list-inline-item">  </li>
+        <li class="list-inline-item">  </li>
+      </ul>
+    </div> -->
+    </div>
+  </div>
+</div>
+{% empty %}
+<div class="card">
+  <div class="card-body">
+    No Appointments registered for this combination of filters.
+  </div>
+</div>
+{% endfor %}
+    <!-- </ol> -->
+</div>
+
+
+{%endif%}  <!--endif for if not admin-->
+<!-- Button trigger modal -->
+
+<div class="modal fade" id="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modaltitle">Cancel Appointment</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id='modalbody'>
+        Are you sure you want to cancel this appointment?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <div id="modalbutton">
+          <button type="button" class="btn btn-primary" id>Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="{%static 'js/url_editor.js'%}"></script>
+<script>
+  function getCancelModal(url) {
+    console.log(url);
+    var modal = new bootstrap.Modal(document.getElementById('modal'))
+    modalhead = document.getElementById('modaltitle');
+    modalbody = document.getElementById('modalbody');
+    modalbutton = document.getElementById('modalbutton');
+    modalhead.innerHTML = "Cancel Appointment";
+    modalbody.innerHTML = "Are you sure you want to cancel this appointment?";
+    modalbutton.innerHTML = `
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+    <a href='${url}' class="btn btn-primary" id>Yes</button>`;
+    modal.show()
+  }
+  function getDeleteModal(url) {
+    console.log(url);
+    var modal = new bootstrap.Modal(document.getElementById('modal'))
+    modalhead = document.getElementById('modaltitle');
+    modalbody = document.getElementById('modalbody');
+    modalbutton = document.getElementById('modalbutton');
+    modalhead.innerHTML = 'Delete Appointment';
+    modalbody.innerHTML = 'Are you sure you want to delete this appointment?';
+    modalbutton.innerHTML = `
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+            <a href='${url}' class="btn btn-primary" id>Yes</button>`;
+    modal.show()
+  }
+  function getCheckinModal(url) {
+    console.log(url);
+    var modal = new bootstrap.Modal(document.getElementById('modal'))
+    modalhead = document.getElementById('modaltitle');
+    modalbody = document.getElementById('modalbody');
+    modalbutton = document.getElementById('modalbutton');
+    modalhead.innerHTML = 'Check In';
+    modalbody.innerHTML = 'Are you sure you want to check in? Please check-in only if you have physically arrived at appointment location.';
+    modalbutton.innerHTML = `
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+            <a href='${url}' class="btn btn-primary" id>Yes</button>`;
+    modal.show()
+  }
+  
+  function cancelCheckInModal(url) {
+    console.log(url);
+    var modal = new bootstrap.Modal(document.getElementById('modal'))
+    modalhead = document.getElementById('modaltitle');
+    modalbody = document.getElementById('modalbody');
+    modalbutton = document.getElementById('modalbutton');
+    modalhead.innerHTML = 'Cancel Check-In';
+    modalbody.innerHTML = 'Checked in by mistake? Not at the appointment location?';
+    modalbutton.innerHTML = `
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+            <a href=${url} class="btn btn-primary" id>Yes</button>`;
+    modal.show()
+  }
+  function filter(date = false, doc = false, status = false, url_string = window.location.href) {
+    console.log("filter", date, doc, status, url_string);
+    url = new URL(url_string);
+    if (date) {
+      console.log("date", date);
+      url.searchParams.set('date', date);
+    }
+    if (doc) {
+      console.log("doc", doc);
+      url.searchParams.set('doc', doc);
+      url.searchParams.delete('date')
+    }
+    if (status) {
+      console.log("status", status);
+      url.searchParams.set('status', status);
+    }
+    window.location.href = url;
+  }
+  function removefilter(type) {
+    url = new URL(window.location.href);
+    url.searchParams.delete(type);
+    window.location.href = url;
+  }
+  function filteractive() {
+    url = new URL(window.location.href);
+    a = url.searchParams.get('status');
+    b = url.searchParams.get('date');
+    c = url.searchParams.get('doc');
+    if (a) {
+      try {
+        document.getElementById('status' + a).classList.add('active');
+      } catch (e) {
+        console.log(e);
+        removefilter('status');
+      }
+    }
+    else {
+      document.getElementById('status_all').classList.add('active');
+    }
+    if (b) {
+      try {
+        document.getElementById('date' + b).classList.add('active');
+      } catch (e) {
+        console.log(e);
+        removefilter('date')
+      }
+    }
+    else {
+      document.getElementById('date_all').classList.add('active');
+    }
+    if (c) {
+      try {
+        document.getElementById('doc' + c).classList.add('active');
+      } catch (e) {
+        console.log(e);
+        // removefilter('doc')
+      }
+    } else {
+      document.getElementById('doc_all').classList.add('active');
+    }
+  }
+  window.addEventListener('load', filteractive);
+
+  messages = {
+    '0':{
+      'head':'Appointment Slot Created',
+      'body':'New appointment slot has been added.',
+      'button':`<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Okay</button>`
+    },
+    '1':{
+      'head':'Appointment Booked',
+      'body':'Your appointment has been confirmed.',
+      'button':`<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Okay</button>`
+    },
+    '2':{
+      'head':'Appointment Edited',
+      'body':'Your appointment has been successfully edited.',
+      'button':`<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Okay</button>`
+    },
+    '3':{
+      'head':'Appointment Deleted',
+      'body':'This appointment slot has been deleted',
+      'button':`<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Okay</button>`
+    },
+    '4':{
+      'head':'Appointment Cancelled',
+      'body':'Thank you for contacting us, your appointment has been cancelled.',
+      'button':`<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Okay</button>`
+    },
+    '5':{
+      'head':'Appointment Rescheduled',
+      'body':'Your appointment has been rescheduled.',
+      'button':`<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Okay</button>`
+    },
+    '6':{
+      'head':'Appointment Completed',
+      'body':'Congratulations on completing your appointment. Please pay any fees due(if any).',
+      'button':`<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Okay</button>`
+    },
+    '7':{
+      'head':'Checked In',
+      'body':'Congratulations,you have been checked in successfully.',
+      'button':`<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Okay</button>`
+    },
+    '8':{
+      'head':'Checked Out',
+      'body':'Your appointment status is changed back to booked. Please check in when you reach the clinic.',
+      'button':`<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Okay</button>`
+    },
+    '9':{
+      'head':'Reminders Sent',
+      'body':'Reminders have been sent successfully',
+      'button':`<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Okay</button>`
+    },
+    '10':{
+      'head':'Profile Updated',
+      'body':'Your account details have been updated',
+      'button':`<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Okay</button>`
+    },
+  }
+
+  function getModal(a) {
+    console.log(a);
+    var modal = new bootstrap.Modal(document.getElementById('modal'))
+    modalhead = document.getElementById('modaltitle');
+    modalbody = document.getElementById('modalbody');
+    modalbutton = document.getElementById('modalbutton');
+    modalhead.innerHTML = messages[a]['head'];
+    modalbody.innerHTML = messages[a]['body'];
+    modalbutton.innerHTML = messages[a]['button'];
+    modal.show()
+  }
+
+  function showMessage(){
+    url = new URL(window.location.href);
+    a = url.searchParams.get('message');
+    if (a) {
+      getModal(a);
+    }
+    removeQString('message') 
+  }
+  window.addEventListener('load', showMessage);
+</script>
+{% endblock %}
