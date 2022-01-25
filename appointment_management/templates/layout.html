@@ -81,7 +81,7 @@ function changeUrl(key, value) {
 			<div class="container-fluid">
 				<a class="navbar-brand" href="{%url 'home'%}">
 					<img src="{%static 'images/favicon.ico'%}" width="30" height="30" class="d-inline-block align-top" alt="">
-					Skin Studio
+					Skin Studio (Dr. Rasna Kapoor)
 				</a>
 			  <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
 				<span class="navbar-toggler-icon"></span>
@@ -96,19 +96,19 @@ function changeUrl(key, value) {
 					<ul class="navbar-nav">
 						{% if user.is_superuser %}
 						<li class="nav-item">
-								<a class="nav-link" href ="/admin/">Admin Site</a>
-							
+								<a class="nav-link" href ="/admin/"><i class="fas fa-user-shield"></i> Admin Site</a>
+
 						</li>
 						{% else %}
 							<li class="nav-item">
-								<a class="nav-link" href="{%url 'appointments'%}">All Time Slots</a></li>
+								<a class="nav-link" href="{%url 'appointments'%}"><i class="fas fa-list-alt"></i>  All Time Slots</a></li>
 							</li>
 							{% if is_doctor %}
 							<li class="nav-item">
-									<a class="nav-link" onclick="window.location='{%url 'add_appointment'%}'">Add Appointment</a>
+									<a class="nav-link" onclick="window.location='{%url 'add_appointment'%}'"><i class="fas fa-calendar-plus"></i> Create Time Slots</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" onclick="window.location='{%url 'send_notifications'%}'">Send Notifications</a>
+								<a class="nav-link" onclick="window.location='{%url 'send_notifications'%}'"><i class="fas fa-bell"></i> Send Notifications</a>
 							</li>
 							{% endif %}
 						{% endif %}
@@ -123,32 +123,40 @@ function changeUrl(key, value) {
 							</a>
 							<div id="webpush-message" hidden></div>
 						</li> -->
-						<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="offcanvasNavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+						<!--<li class="nav-item dropdown">-->
+						<!--<a class="nav-link dropdown-toggle" href="#" id="offcanvasNavbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">-->
 							<!-- {{user.groups.all.first.name}} -->
-							{% for group in request.user.groups.all %}
-							{% if group.name == 'doctor' %}
-							Doctor:
-							{% elif group.name == 'patient' %}
-							Patient:
-							{% endif %}
-							{% endfor %}
-							{{request.user.first_name}}
-							{% if user.is_superuser %}
-								Admin user
-							{% endif %}
-						</a>
-						<ul class="dropdown-menu" aria-labelledby="offcanvasNavbarDropdown">
-							
+
+						<!--</a>-->
+						<!--<ul class="dropdown-menu" aria-labelledby="offcanvasNavbarDropdown">-->
+
 						{% if user.is_superuser %}
+							<li class="nav-item"><a  class="nav-link"><i class="fas fa-user-circle"></i>Admin User</a></li>
 						{% else %}
-							<li><a class="dropdown-item" href="{%url 'profile'%}">Profile</a></li>
-							<li>
-							<hr class="dropdown-divider">
+						    <li class="nav-item">
+							    <a  class="nav-link" href="{%url 'profile'%}">
+							        <i class="fas fa-user-circle"></i>
+        							{% for group in request.user.groups.all %}
+        							{% if group.name == 'doctor' %}
+        							Doctor Profile:
+        							{% elif group.name == 'patient' %}
+        							Patient Profile:
+        							{% endif %}
+        							{% endfor %}
+        							{{request.user.first_name}}
+        							{% if user.is_superuser %}
+        								Admin user
+        							{% endif %}
+							    </a>
 							</li>
+							<!--<li class="nav-item"><a  class="nav-link"  href="{%url 'profile'%}"><i class="fas fa-user-circle"></i>Profile</a></li>-->
+							<!--<li>-->
+							<!--<hr class="dropdown-divider">-->
+							<!--</li>-->
 						{% endif %}
-							<li><a class="dropdown-item" href="{% url 'logout'%}">Logout</a></li>
-						</ul>
+							<li class="nav-item"><a  class="nav-link"  href="{% url 'logout'%}"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
+						 <!-- a class="dropdown-item"-->
+						<!--</ul>-->
 						{% else %}
 						<li class="nav-item">
 							<a href="{%url 'login'%}" class="nav-link"><i class="fas fa-arrow-circle-left"></i> Back to login</a>

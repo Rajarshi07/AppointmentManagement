@@ -48,27 +48,27 @@ body {
 <div class="container mt-5 mb-5">
   <h4>Welcome to {% if is_doctor %}Doctor's{%endif%}{% if is_patient %}Patient's{%endif%}{% if user.is_superuser %}Admin's{%endif%} Dashboard</h4>
     <div class="row text-center">
-      
+
       {% if user.is_superuser %}
         <div class="col-lg-4">
-          <a class="btn btn-success text-uppercase w-100 mb-2" href="/admin/">Admin Site</a>
+          <a class="btn btn-success text-uppercase w-100 mb-2" href="/admin/"><i class="fas fa-user-shield"></i> Admin Site</a>
         </div>
       {% else %}
         <div class="col-lg-4">
-          <a class="btn btn-success text-uppercase w-100  mb-2" href="{%url 'profile'%}">Update Profile Information</a>
+          <a class="btn btn-success text-uppercase w-100  mb-2" href="{%url 'profile'%}"><i class="fas fa-user-circle"></i>  Update Profile Information</a>
         </div>
         {% if is_doctor %}
         <div class="col-lg-4">
-          <a class="btn btn-success text-uppercase w-100 mb-2" href="{%url 'add_appointment'%}">Create Time Slots</a>
+          <a class="btn btn-success text-uppercase w-100 mb-2" href="{%url 'add_appointment'%}"><i class="fas fa-calendar-plus"></i> Create Time Slots</a>
         </div>
         {%endif%}
         {% if is_patient %}
         <div class="col-lg-4">
-          <a class="btn btn-success text-uppercase w-100 mb-2" href="{%url 'appointments'%}?status=0">Book Appointments</a>
+          <a class="btn btn-success text-uppercase w-100 mb-2" href="{%url 'appointments'%}?status=0"><i class="fas fa-list-alt"></i> Book Appointments</a>
         </div>
         {%endif%}
         <div class="col-lg-4">
-          <a class="btn btn-success text-uppercase w-100 mb-2" href="{%url 'appointments'%}?status=1">View / Update Appointments</a>
+          <a class="btn btn-success text-uppercase w-100 mb-2" href="{%url 'appointments'%}?status=1"><i class="far fa-calendar-check"></i> View / Update Appointments</a>
         </div>
     </div>
     <div class="d-flex justify-content-between mb-3"> <span>{% if is_doctor %}Patients{%elif is_patient%}Doctors{%endif%}</span></div>
@@ -78,7 +78,7 @@ body {
             <div class="col-md-3">
                 <div class="card p-2 py-3 text-center h-100">
                     <!-- <div class="img mb-2"> <img src="https://i.imgur.com/LohyFIN.jpg" width="70" class="rounded-circle"> </div> -->
-                    <h5 class="mb-0">{{pat.user.get_full_name}}</h5> 
+                    <h5 class="mb-0">{{pat.user.get_full_name}}</h5>
                     <div class="ratings mt-2"><small>{{patient.history|linebreaksbr}}</small> </div>
                     <div class="mt-4 apointment"> <a class="btn btn-success text-uppercase" href="{% url 'patient_profile' id=pat.pk %}">Show Profile</a> </div>
                 </div>
@@ -89,7 +89,7 @@ body {
             <div class="col-md-3">
                 <div class="card p-2 py-3 text-center h-100">
                     <!-- <div class="img mb-2"> <img src="https://i.imgur.com/LohyFIN.jpg" width="70" class="rounded-circle"> </div> -->
-                    <h5 class="mb-0">{{doctor.user.get_full_name}}</h5> 
+                    <h5 class="mb-0">{{doctor.user.get_full_name}}</h5>
                     <div class="ratings mt-2"><small>{{doctor.qualifications|linebreaksbr}}</small> </div>
                     <div class="mt-4 apointment"> <a class="btn btn-success text-uppercase" href="{%url 'appointments'%}?doc={{doctor.pk}}&status=0">Book Appointment</a> </div>
                 </div>
@@ -105,56 +105,56 @@ body {
       height: 100% !important;
       /* background-color: #89c77e !important */
     }
-  
+
     #star {
       margin-left: -5px !important;
       vertical-align: bottom !important;
       opacity: 0.5
     }
-  
+
     .more {
       opacity: 0.5 !important
     }
-  
+
     .btn:hover {
       color: black !important
     }
-  
+
     .vl {
       margin: 8px !important;
       width: 2px;
       border-right: 1px solid #aaaaaa;
       height: 25px
     }
-  
+
     #plus {
       opacity: 0.8
     }
-  
+
     .card {
       border-radius: 10px !important
     }
-  
+
     /* a:hover {
       background-color: #ccc !important
     } */
-  
+
     .btn-outlined:active {
       color: #FFF;
       border-color: #fff !important
     }
-  
+
     img {
       cursor: pointer;
       overflow: visible
     }
-  
+
     .btn:focus,
     .btn:active {
       outline: none !important;
       box-shadow: none !important
     }
-  
+
     .container {
       margin-top: 100px !important
     }
@@ -180,9 +180,9 @@ body {
           <p class="card-text text-muted small ">
             Dr. {{apt.doctor.user.get_full_name}}
             <span class="vl mr-2 ml-0"></span>
-            <span class="text-weight-bold 
-            {% if apt.status is 0 %}text-primary 
-            {%elif apt.status is 1%} text-warning 
+            <span class="text-weight-bold
+            {% if apt.status is 0 %}text-primary
+            {%elif apt.status is 1%} text-warning
             {%elif apt.status is 2 %} text-success
             {%elif apt.status is 3%} text-danger
             {%endif%}">
@@ -244,7 +244,7 @@ body {
           <!--Checked In-->
             {% if apt.payment_status is 0 %}
               <a class="btn btn-outlined btn-black text-muted " href="{%url 'payment' id=apt.id }">Pay {{apt.billing_amount}}</a>
-            {% endif %}              
+            {% endif %}
           <a class="btn btn-outlined btn-black text-muted " href="{%url 'edit_appointment' id=apt.id %}">Edit</a>
           <a class="btn btn-outlined btn-danger" onclick="cancelCheckInModal('{%url 'cancelCheckIn_appointment' id=apt.id %}')">Cancel Check-In</a>
           <a class="btn btn-outlined btn-success" href="{%url 'complete_appointment' id=apt.id %}">Complete</a>
@@ -340,7 +340,7 @@ body {
             <a href='${url}' class="btn btn-primary" id>Yes</button>`;
     modal.show()
   }
-  
+
   function cancelCheckInModal(url) {
     console.log(url);
     var modal = new bootstrap.Modal(document.getElementById('modal'))
@@ -493,7 +493,7 @@ body {
     if (a) {
       getModal(a);
     }
-    removeQString('message') 
+    removeQString('message')
   }
   window.addEventListener('load', showMessage);
 </script>
