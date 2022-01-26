@@ -46,7 +46,7 @@ body {
 }
 </style>
 <div class="container mt-5 mb-5">
-  <h4>Welcome to {% if is_doctor %}Doctor's{%endif%}{% if is_patient %}Patient's{%endif%}{% if user.is_superuser %}Admin's{%endif%} Dashboard</h4>
+  <h4>Welcome to {% if is_doctor %}Doctor's{%endif%}{% if is_patient %}Patient's{%endif%}{% if user.is_superuser %}Admin's{%endif%} Dashboard.{% if is_doctor %} You can add and delete your appointments here.{%endif%}{% if is_patient %} You can schedule, cancel  or edit your appointments here.{%endif%}</h4>
     <div class="row text-center">
 
       {% if user.is_superuser %}
