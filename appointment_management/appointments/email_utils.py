@@ -104,7 +104,7 @@ def send_patient_email(appointment,request, status):
         email.send()
         print("sent")
     except Exception as e:
-        print(e.message)
+        print(e)
 
 def send_doctor_email(appointment,request, status):
     try:
