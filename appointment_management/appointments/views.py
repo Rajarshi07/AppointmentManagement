@@ -164,7 +164,10 @@ def edit_appointment(request,id):
             return render(request, 'apt_create_view.html', context)
 
 def delete_appointment(request,id):
-    appointment = get_object_or_404(Appointment, pk=id)
+    try:
+        appointment = Appointment.objects.get(pk=id)
+    except:
+        return HttpResponseRedirect('/appointments/?message=3')
     if appointment.doctor.user == request.user:
         if(appointment.status != AppointmentStatus.OPEN):
             # Send notification to patient here

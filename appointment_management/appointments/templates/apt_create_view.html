@@ -46,8 +46,8 @@
         
             <!-- Using the formset -->
             {{ form.as_p}} 
-            
-            <input type="submit" value="Submit" class="btn btn-success text-uppercase"> 
+            <!-- button onclick disables if form validated and submits forms-->
+            <input type="submit" value="Submit" class="btn btn-success text-uppercase" onclick="this.disabled=true;this.value='Submitting...';this.form.submit();"/> 
         </form> 
     </div>
 </div>
