@@ -3,7 +3,7 @@ certifi==2021.10.8
 cffi==1.15.0
 charset-normalizer==2.0.7
 cryptography==35.0.0
-Django==3.2.8
+Django==3.2.16
 django-webpush==0.3.3
 http-ece==1.1.0
 idna==3.3
