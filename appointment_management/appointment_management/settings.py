@@ -165,8 +165,6 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_PASSWORD = 'usoamtzkpaciyjsw'
 EMAIL_HOST_USER = 'skinstudiobyrasnakapoor@gmail.com'
-# EMAIL_HOST_PASSWORD = 'quyavkdeiwepzybd'   ##error
-# EMAIL_HOST_USER = 'skinstudio.46@gmail.com'
 
 # Web notifications settings
 # Vapid keys from: https://web-push-codelab.glitch.me/

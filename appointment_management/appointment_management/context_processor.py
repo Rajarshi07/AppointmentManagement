@@ -29,8 +29,8 @@ def user_processor(request):
 
 def admin_header_processor(request):
     context = {}
-    context['index_title'] =  "Welcome to Skin Studio"
-    context['site_header'] = 'Skin Studio'
-    context['site_name'] = 'Skin Studio'
-    context['site_title'] = "Skin Studio - Admin Portal"
+    context['index_title'] =  "Welcome to Appointment Manager"
+    context['site_header'] = 'Appointment Manager'
+    context['site_name'] = 'Appointment Manager'
+    context['site_title'] = "Appointment Manager - Admin Portal"
     return context

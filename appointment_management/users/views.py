@@ -130,7 +130,7 @@ def doctor_register(request):
             return render(request,'register_dr.html',{"msg":"<ul><li>User already exists, Please try with another email.</ul></li>"+password_validators_help_text_html()})
         DoctorProfile.objects.create(user = user, qualifications = request.POST.get('qualifications'), phone = request.POST.get('phone'))
         current_site = get_current_site(request)
-        mail_subject = 'Activate your Skin Studio Account.'
+        mail_subject = 'Activate your Appointment Manager Account.'
         message = render_to_string('email_activation.html', {
             'user': user,
             'domain': current_site.domain,
@@ -166,7 +166,7 @@ def patient_register(request):
             return render(request,'register_pt.html',{"msg":"<ul><li>User already exists, Please try with another email.</ul></li>"+password_validators_help_text_html()})
         PatientProfile.objects.create(user = user,address = request.POST.get('address'), phone = request.POST.get('phone'),dob = request.POST.get('dob'), history= request.POST.get('history'))
         current_site = get_current_site(request)
-        mail_subject = 'Activate your Skin Studio Account.'
+        mail_subject = 'Activate your Appointment Manager Account.'
         message = render_to_string('email_activation.html', {
             'user': user,
             'domain': current_site.domain,

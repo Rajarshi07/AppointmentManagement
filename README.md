@@ -2,7 +2,7 @@
 
 This is an appointment booking webapp made with django.
 
-### Live Demo : [![Skin Studio](./appointment_management/static/images/favicon.ico)Skin Studio](https://skinstudio.pythonanywhere.com)
+### Live Demo : [![Appointment Manager](./appointment_management/static/images/favicon.ico)Appointment Manager](https://AppointmentManager.rajarshi07.in)
 
 
 ## Technology Stack
@@ -80,7 +80,7 @@ This is an appointment booking webapp made with django.
 
 3. ADMIN (Not to be used for anything other than accessing admin panel. Modifying data from admin panel may lead to problems in the application.)
 
-        EMAIL: skinstudio
+        EMAIL: appointmentmanagement
         PASSWORD: 1214
 
         EMAIL: admin

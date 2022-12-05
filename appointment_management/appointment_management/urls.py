@@ -23,9 +23,9 @@ from django.conf.urls import url
 from django.views.generic import TemplateView, RedirectView
 from django.contrib.auth.views import LogoutView
 
-admin.site.site_header = "Skin Studio"
-admin.site.site_title = "Skin Studio - Admin Portal"
-admin.site.index_title = "Welcome to Skin Studio"
+admin.site.site_header = "Appointment Manager"
+admin.site.site_title = "Appointment Manager - Admin Portal"
+admin.site.index_title = "Welcome to Appointment Manager"
 admin.site.login_template = "login.html"
 auth_views.PasswordResetView.template_name = 'password_reset_form.html'
 auth_views.PasswordResetView.email_template_name = 'password_reset_email.html'

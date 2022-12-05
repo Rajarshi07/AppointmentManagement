@@ -1,6 +1,6 @@
 {% autoescape off %}
 Hi {{ user.username }},
-Thank You for registering to Skin Studio. Please click on the link to confirm your registration.
+Thank You for registering to Appointment Manager. Please click on the link to confirm your registration.
 
 http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
 
