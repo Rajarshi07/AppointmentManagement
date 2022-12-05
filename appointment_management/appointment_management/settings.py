@@ -161,10 +161,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Email Settings
 
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_PASSWORD = 'usoamtzkpaciyjsw'
-EMAIL_HOST_USER = 'skinstudiobyrasnakapoor@gmail.com'
+EMAIL_HOST = os.getenv('EMAIL_HOST','smtp.gmail.com')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER','appt.demo@gmail.com')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD','dummypass')
 
 # Web notifications settings
 # Vapid keys from: https://web-push-codelab.glitch.me/
